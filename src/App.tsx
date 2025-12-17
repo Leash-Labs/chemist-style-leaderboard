@@ -26,7 +26,16 @@ export default function App() {
         <p style={{ margin: '0 0 12px 0', lineHeight: '1.5' }}>
           This leaderboard ranks chemists by the distinctiveness of their molecular designs. We trained a LightGBM model
           with 1,815 classes to predict the author of a molecule based solely on its chemical structure. The dataset
-          includes chemists from ChEMBL who have authored at least 30 papers and contributed at least 600 molecules.
+          includes chemists from ChEMBL who have authored at least 30 papers and contributed at least 600 molecules.{' '}
+          <a
+            href="https://leashbio.substack.com/p/ai-for-chemistry-in-2025-is-like"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#0066cc', textDecoration: 'none' }}
+          >
+            Read more
+          </a>
+          .
         </p>
       </div>
 
