@@ -27,7 +27,7 @@ export default function Leaderboard() {
   const rowRefs = useRef<Record<number, HTMLTableRowElement>>({})
 
   useEffect(() => {
-    fetch('/data/leaderboard.json').then(r => r.json()).then((j: LeaderboardData) => setData(j))
+    fetch(`${import.meta.env.BASE_URL}data/leaderboard.json`).then(r => r.json()).then((j: LeaderboardData) => setData(j))
   }, [])
 
   // First, sort the full dataset to get original rankings
