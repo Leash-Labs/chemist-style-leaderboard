@@ -17,8 +17,15 @@ export default function App() {
   return (
     <div className="container">
       <header className="header">
-        <div className="title">Molecular Distinctiveness Leaderboard</div>
-        <div className="subtle">Ranking chemists by the uniqueness of their molecular designs on ChEMBL</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
+          <a href="https://www.leash.bio/" style={{ display: 'inline-block', cursor: 'pointer' }}>
+            <img src="/logo.png" alt="Logo" style={{ height: '48px', width: 'auto' }} />
+          </a>
+          <div>
+            <div className="title">Molecular Distinctiveness Leaderboard</div>
+            <div className="subtle">Ranking chemists by the uniqueness of their molecular designs on ChEMBL</div>
+          </div>
+        </div>
       </header>
 
       <div className="panel" style={{ marginBottom: 16 }}>
