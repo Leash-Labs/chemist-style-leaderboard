@@ -19,7 +19,7 @@ export default function App() {
       <header className="header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
           <a href="https://www.leash.bio/" style={{ display: 'inline-block', cursor: 'pointer' }}>
-            <img src="/logo.png" alt="Logo" style={{ height: '48px', width: 'auto' }} />
+            <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Logo" style={{ height: '48px', width: 'auto' }} />
           </a>
           <div>
             <div className="title">Molecular Distinctiveness Leaderboard</div>
