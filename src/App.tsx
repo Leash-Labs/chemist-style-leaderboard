@@ -1,7 +1,21 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Leaderboard from './components/Leaderboard'
+import Quiz from './components/Quiz'
 
 export default function App() {
+  const getViewFromHash = () => {
+    if (typeof window === 'undefined') return 'leaderboard'
+    return window.location.hash === '#quiz' ? 'quiz' : 'leaderboard'
+  }
+
+  const [view, setView] = useState<'leaderboard' | 'quiz'>(getViewFromHash)
+
+  useEffect(() => {
+    const onHashChange = () => setView(getViewFromHash())
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === '/') {
@@ -13,6 +27,16 @@ export default function App() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
+
+  const handleViewChange = (next: 'leaderboard' | 'quiz') => {
+    setView(next)
+    if (next === 'quiz') {
+      window.location.hash = 'quiz'
+    } else {
+      const baseUrl = window.location.pathname + window.location.search
+      window.history.replaceState(null, '', baseUrl)
+    }
+  }
 
   return (
     <div className="container">
@@ -26,27 +50,51 @@ export default function App() {
             <div className="subtle">Ranking chemists by the uniqueness of their molecular designs on ChEMBL</div>
           </div>
         </div>
+        <div className="tabs" role="tablist" aria-label="Primary navigation">
+          <button
+            className={`tab ${view === 'leaderboard' ? 'tab-active' : ''}`}
+            role="tab"
+            aria-selected={view === 'leaderboard'}
+            onClick={() => handleViewChange('leaderboard')}
+          >
+            Leaderboard
+          </button>
+          <button
+            className={`tab ${view === 'quiz' ? 'tab-active' : ''}`}
+            role="tab"
+            aria-selected={view === 'quiz'}
+            onClick={() => handleViewChange('quiz')}
+          >
+            Quiz
+          </button>
+        </div>
       </header>
 
-      <div className="panel" style={{ marginBottom: 16 }}>
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '600' }}>Methodology</h3>
-        <p style={{ margin: '0 0 12px 0', lineHeight: '1.5' }}>
-          This leaderboard ranks chemists by the distinctiveness of their molecular designs. We trained a LightGBM model
-          with 1,815 classes to predict the author of a molecule based solely on its chemical structure. The dataset
-          includes chemists from ChEMBL who have authored at least 30 papers and contributed at least 600 molecules.{' '}
-          <a
-            href="https://leashbio.substack.com/p/ai-for-chemistry-in-2025-is-like"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: '#0066cc', textDecoration: 'none' }}
-          >
-            Read more
-          </a>
-          .
-        </p>
-      </div>
+      {view === 'leaderboard' && (
+        <>
+          <div className="panel" style={{ marginBottom: 16 }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '600' }}>Methodology</h3>
+            <p style={{ margin: '0 0 12px 0', lineHeight: '1.5' }}>
+              This leaderboard ranks chemists by the distinctiveness of their molecular designs. We trained a LightGBM model
+              with 1,815 classes to predict the author of a molecule based solely on its chemical structure. The dataset
+              includes chemists from ChEMBL who have authored at least 30 papers and contributed at least 600 molecules.{' '}
+              <a
+                href="https://leashbio.substack.com/p/ai-for-chemistry-in-2025-is-like"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#0066cc', textDecoration: 'none' }}
+              >
+                Read more
+              </a>
+              .
+            </p>
+          </div>
 
-      <Leaderboard />
+          <Leaderboard />
+        </>
+      )}
+
+      {view === 'quiz' && <Quiz />}
     </div>
   )
 }
