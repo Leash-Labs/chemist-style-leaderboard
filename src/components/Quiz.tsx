@@ -136,8 +136,11 @@ export default function Quiz() {
     startRound()
   }
 
-  const copyResults = async () => {
-    const shareText = `I scored ${scoreState.correct}/${scoreState.total} on the Chemist Style Quiz. Can you spot the outlier? https://leash-labs.github.io/chemist-style-leaderboard/quiz/`
+  const quizUrl = 'https://leash-labs.github.io/chemist-style-leaderboard/quiz/'
+  const shareTextBase = `I scored ${scoreState.correct}/${scoreState.total} on Name That Chemist. Try it out!`
+
+  const copyResults = async (includeUrl = true) => {
+    const shareText = includeUrl ? `${shareTextBase} ${quizUrl}` : shareTextBase
     try {
       await navigator.clipboard.writeText(shareText)
       setCopyState({ status: 'copied', message: 'Copied to clipboard' })
@@ -151,10 +154,19 @@ export default function Quiz() {
   return (
     <>
       <div className="panel" style={{ marginBottom: 16 }}>
-        <h3 style={{ margin: '0 0 8px 0' }}>Chemist Style Quiz</h3>
+        <h3 style={{ margin: '0 0 8px 0' }}>Name That Chemist</h3>
         <p style={{ margin: '0 0 8px 0', lineHeight: 1.5 }}>
           Three molecules below were authored by one chemist. The fourth belongs to another. Pick the outlier to see
-          how well you can recognize molecular styles. Each round reveals both chemists so you learn as you go.
+          how well you can recognize molecular styles. Each round reveals both chemists so you learn as you go.{' '}
+          <a
+            href="https://leashbio.substack.com/p/ai-for-chemistry-in-2025-is-like"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#0066cc', textDecoration: 'none' }}
+          >
+            Read more
+          </a>
+          .
         </p>
         <div className="quiz-score">
           <div><span className="label">Rounds played</span><span className="value">{scoreState.total}</span></div>
@@ -251,13 +263,13 @@ export default function Quiz() {
                   />
                 </button>
                 <a
-                  className="share-button share-button-linkedin"
-                  href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fleash-labs.github.io%2Fchemist-style-leaderboard%2Fquiz%2F"
-                  onClick={() => { void copyResults() }}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Share on LinkedIn"
-                  title="Share on LinkedIn"
+                className="share-button share-button-linkedin"
+                href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fleash-labs.github.io%2Fchemist-style-leaderboard%2Fquiz%2F"
+                onClick={() => { void copyResults(false) }}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Share on LinkedIn"
+                title="Share on LinkedIn"
                 >
                   <img
                     className="share-icon"
@@ -267,13 +279,13 @@ export default function Quiz() {
                   />
                 </a>
                 <a
-                  className="share-button share-button-x"
-                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                    `I scored ${scoreState.correct}/${scoreState.total} on the Chemist Style Quiz. Can you spot the outlier?`
-                  )}&url=https%3A%2F%2Fleash-labs.github.io%2Fchemist-style-leaderboard%2Fquiz%2F`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Share on X"
+                className="share-button share-button-x"
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                  shareTextBase
+                )}&url=${encodeURIComponent(quizUrl)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Share on X"
                   title="Share on X"
                 >
                   <img
