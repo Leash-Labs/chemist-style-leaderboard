@@ -3,17 +3,23 @@ import Leaderboard from './components/Leaderboard'
 import Quiz from './components/Quiz'
 
 export default function App() {
-  const getViewFromHash = () => {
+  const getViewFromLocation = () => {
     if (typeof window === 'undefined') return 'leaderboard'
-    return window.location.hash === '#quiz' ? 'quiz' : 'leaderboard'
+    if (window.location.hash === '#quiz') return 'quiz'
+    const trimmedPath = window.location.pathname.replace(/\/+$/, '')
+    return trimmedPath.endsWith('/quiz') ? 'quiz' : 'leaderboard'
   }
 
-  const [view, setView] = useState<'leaderboard' | 'quiz'>(getViewFromHash)
+  const [view, setView] = useState<'leaderboard' | 'quiz'>(getViewFromLocation)
 
   useEffect(() => {
-    const onHashChange = () => setView(getViewFromHash())
-    window.addEventListener('hashchange', onHashChange)
-    return () => window.removeEventListener('hashchange', onHashChange)
+    const syncView = () => setView(getViewFromLocation())
+    window.addEventListener('hashchange', syncView)
+    window.addEventListener('popstate', syncView)
+    return () => {
+      window.removeEventListener('hashchange', syncView)
+      window.removeEventListener('popstate', syncView)
+    }
   }, [])
 
   useEffect(() => {
@@ -33,7 +39,10 @@ export default function App() {
     if (next === 'quiz') {
       window.location.hash = 'quiz'
     } else {
-      const baseUrl = window.location.pathname + window.location.search
+      const trimmedPath = window.location.pathname.replace(/\/+$/, '')
+      const basePath = trimmedPath.endsWith('/quiz') ? trimmedPath.slice(0, -5) : trimmedPath
+      const normalizedBase = basePath ? `${basePath}/` : '/'
+      const baseUrl = normalizedBase + window.location.search
       window.history.replaceState(null, '', baseUrl)
     }
   }

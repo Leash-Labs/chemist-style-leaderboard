@@ -37,6 +37,10 @@ export default function Quiz() {
   const [selected, setSelected] = useState<string | null>(null)
   const [status, setStatus] = useState<'idle' | 'correct' | 'incorrect'>('idle')
   const [scoreState, setScoreState] = useState({ correct: 0, total: 0 })
+  const [copyState, setCopyState] = useState<{ status: 'idle' | 'copied' | 'error'; message: string }>({
+    status: 'idle',
+    message: ''
+  })
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data/leaderboard.json`)
@@ -132,6 +136,17 @@ export default function Quiz() {
     startRound()
   }
 
+  const copyResults = async () => {
+    const shareText = `I scored ${scoreState.correct}/${scoreState.total} on the Chemist Style Quiz. Can you spot the outlier? https://leash-labs.github.io/chemist-style-leaderboard/quiz/`
+    try {
+      await navigator.clipboard.writeText(shareText)
+      setCopyState({ status: 'copied', message: 'Copied to clipboard' })
+    } catch (error) {
+      setCopyState({ status: 'error', message: 'Unable to copy. Try selecting the text below.' })
+    }
+    window.setTimeout(() => setCopyState({ status: 'idle', message: '' }), 2000)
+  }
+
   const accuracy = scoreState.total ? ((scoreState.correct / scoreState.total) * 100).toFixed(0) + '%' : '—'
   return (
     <>
@@ -217,7 +232,62 @@ export default function Quiz() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
+          <div className="quiz-actions">
+            {scoreState.total > 0 && (
+              <div className="share-bar">
+                <span className="share-label">Share</span>
+                <button
+                  className="share-button"
+                  type="button"
+                  onClick={copyResults}
+                  aria-label="Copy score"
+                  title="Copy score"
+                >
+                  <img
+                    className="share-icon"
+                    src={`${import.meta.env.BASE_URL}icons/link.svg`}
+                    alt=""
+                    aria-hidden="true"
+                  />
+                </button>
+                <a
+                  className="share-button share-button-linkedin"
+                  href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fleash-labs.github.io%2Fchemist-style-leaderboard%2Fquiz%2F"
+                  onClick={() => { void copyResults() }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Share on LinkedIn"
+                  title="Share on LinkedIn"
+                >
+                  <img
+                    className="share-icon"
+                    src={`${import.meta.env.BASE_URL}icons/linkedin.svg`}
+                    alt=""
+                    aria-hidden="true"
+                  />
+                </a>
+                <a
+                  className="share-button share-button-x"
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                    `I scored ${scoreState.correct}/${scoreState.total} on the Chemist Style Quiz. Can you spot the outlier?`
+                  )}&url=https%3A%2F%2Fleash-labs.github.io%2Fchemist-style-leaderboard%2Fquiz%2F`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Share on X"
+                  title="Share on X"
+                >
+                  <img
+                    className="share-icon"
+                    src={`${import.meta.env.BASE_URL}icons/x.svg`}
+                    alt=""
+                    aria-hidden="true"
+                  />
+                </a>
+                {copyState.status !== 'idle' && (
+                  <span className={`share-status ${copyState.status}`}>{copyState.message}</span>
+                )}
+              </div>
+            )}
             <button className="btn" onClick={handleNext} disabled={status === 'idle'}>
               Next round
             </button>
