@@ -19,8 +19,8 @@ export default function SmilesRenderer({
     const SETTINGS = {
         width: width,
         height: height,
-        bondThickness: 2,
-        bondLength: 15,
+        bondThickness: 1.6,
+        bondLength: 17,
         isomeric: true,
         debug: false,
         terminalCarbons: false,
@@ -29,9 +29,9 @@ export default function SmilesRenderer({
         overlapResolutionIterations: 1,
         compactDrawing: false,
         fontFamily: 'Arial, Helvetica, sans-serif',
-        fontSize: 8,
-        fontSizeLarge: 10,
-        padding: 5.0,
+        fontSize: 6,
+        fontSizeLarge: 8,
+        padding: 4.0,
         experimental: false,
         themes: {
             light: {
