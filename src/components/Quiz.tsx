@@ -52,19 +52,19 @@ export default function Quiz() {
   }, [])
 
   const chemistsWithExamples = useMemo(
-    () => data.filter(row => Array.isArray(row.examples) && row.examples.length >= 1),
+    () => data.filter(row => Array.isArray(row.examples) && row.examples.length >= 1 && row.style_score > 0.3),
     [data]
   )
 
   const startRound = useCallback(() => {
     if (chemistsWithExamples.length < 2) {
-      setError('Not enough chemists with example molecules to build the quiz.')
+      setError('Not enough high-style chemists with example molecules to build the quiz.')
       return
     }
 
     const primaryCandidates = chemistsWithExamples.filter(row => (row.examples?.length ?? 0) >= 3)
     if (!primaryCandidates.length) {
-      setError('Need chemists with at least 3 example molecules to run the quiz.')
+      setError('Need high-style chemists with at least 3 example molecules to run the quiz.')
       return
     }
 
